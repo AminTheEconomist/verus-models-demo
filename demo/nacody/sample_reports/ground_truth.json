@@ -1,0 +1,47 @@
+{
+  "DEMOA2024010001": {
+    "PublishedDate": "March 12, 2024",
+    "PublishedYear": "2024",
+    "Customer": "Northgate Lending Corp.",
+    "Client": "Dana Whitfield",
+    "Item": "2018 Demotern DT-450 Highway Tractor",
+    "SerialNumber": "DMT45018X0042917",
+    "FMV_Low": "78,500",
+    "FMV_High": "86,000",
+    "OLV_Low": "64,000",
+    "OLV_High": "70,500",
+    "Condition": "good",
+    "NumSpecs": 5,
+    "NumComps": 3
+  },
+  "DEMOB2024020002": {
+    "PublishedDate": "April 3, 2024",
+    "PublishedYear": "2024",
+    "Customer": "Cascade Mutual Insurance",
+    "Client": "Priya Raman",
+    "Item": "2015 Terraforge TX-350 Crawler Excavator",
+    "SerialNumber": "TFX35015B0007731",
+    "FMV_Low": "112,000",
+    "FMV_High": "124,000",
+    "OLV_Low": "92,000",
+    "OLV_High": "101,500",
+    "Condition": "fair",
+    "NumSpecs": 4,
+    "NumComps": 3
+  },
+  "DEMOC2024030003": {
+    "PublishedDate": "May 21, 2024",
+    "PublishedYear": "2024",
+    "Customer": "Harborview Capital Bank",
+    "Client": "Marcus Oduya",
+    "Item": "2020 Boxline BL-53 Dry Van Trailer",
+    "SerialNumber": "BXL53020T0019284",
+    "FMV_Low": "34,000",
+    "FMV_High": "38,500",
+    "OLV_Low": "27,500",
+    "OLV_High": "31,000",
+    "Condition": "good",
+    "NumSpecs": 4,
+    "NumComps": 3
+  }
+}

@@ -1,0 +1,47 @@
+# --- private working notes: NEVER commit ---
+# Local prep files, not demo material. They stay on this machine.
+INVENTORY.md
+FINISH_AND_TEST_PLAN.md
+
+demo/deprrate/output/
+demo/nacody/sample_reports/*.pdf
+demo/nacody/extracted_assets.csv
+demo/nacody/NACody_Demo_Dashboard.xlsx
+demo/data/assets_demo.csv
+demo/data/ground_truth_params.json
+.DS_Store
+# --- dependencies / build artifacts ---
+node_modules/
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+.next/
+.nuxt/
+dist/
+build/
+.cache/
+.parcel-cache/
+*.log
+
+# --- secrets / credentials (NEVER commit) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+credentials*.json
+**/secrets.yaml
+**/secrets.yml
+secrets.yaml
+service-account*.json
+# --- large model weights / binaries ---
+*.bin
+*.gguf
+*.safetensors
+*.pt
+*.ckpt
+*.onnx
