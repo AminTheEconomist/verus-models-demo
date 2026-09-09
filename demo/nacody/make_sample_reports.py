@@ -7,7 +7,7 @@ Every name, number, serial, and value here is invented. The page LAYOUT
 mirrors the real Verus appraisal reports (workfile code, publication date,
 client block, item/serial lines, FMV/OLV ranges, spec bullets, market
 research comparables) so the extractor demonstrates the same regex patterns
-the original ByCody/PdfScrape notebooks used — without touching client data.
+the original scraper notebooks used — without touching client data.
 
 Writes:  sample_reports/<WORKFILE>.pdf  (x3)
          sample_reports/ground_truth.json   (expected extraction values)

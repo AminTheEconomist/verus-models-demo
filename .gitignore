@@ -2,6 +2,7 @@
 # Local prep files, not demo material. They stay on this machine.
 INVENTORY.md
 FINISH_AND_TEST_PLAN.md
+INTERVIEW_WALKTHROUGH.md
 
 demo/deprrate/output/
 demo/nacody/sample_reports/*.pdf

@@ -4,8 +4,8 @@ extract_market_research.py — NACody text-mining demo: pull structured fields
 out of appraisal-report PDFs with pdfplumber + regex.
 
 A cleaned, function-per-field reconstruction of the extraction logic in the
-original notebooks (ByCody.ipynb, FirstDraft.ipynb, PdfScrape*.ipynb in
-Trucks_and_Trailers/Trucks and Trailers+): workfile code, publication date,
+original notebooks (the first pass was a coworker's; the iterations that
+followed were mine): workfile code, publication date,
 customer/client, item title -> year/make/model, serial number, FMV/OLV
 ranges, condition, spec bullets, and the market-research comparables that
 feed the dashboard's comps section.

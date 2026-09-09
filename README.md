@@ -1,8 +1,14 @@
-# Verus Models Demo — NACody & DeprRateAnalyzR (sanitized)
+# Verus Models Demo — NACody & DeprRateAnalyzR
 
-Interview-ready reconstruction of two internal tools built at Verus Valuations
-(Nov 2022 – Apr 2024). **Everything in `demo/` is synthetic** — no client
-names, appraisal values, or serials from the real work appear anywhere here.
+A working reconstruction of two internal tools I built as Software & Data
+Analyst at Verus Valuations (Nov 2022 – Apr 2024): a depreciation-modeling
+pipeline in R whose coefficients drive a live Excel estimator, and a
+text-mining pipeline that pulls market-research comparables out of appraisal
+PDFs.
+
+The real system runs on bank and insurer collateral appraisals, so none of it
+can be published. **Everything in `demo/` is synthetic** — no client names,
+appraised values, or serial numbers appear anywhere in this repository.
 
 ## Run it
 
@@ -10,48 +16,59 @@ names, appraisal values, or serials from the real work appear anywhere here.
 bash demo/validate/run_validation.sh
 ```
 
-~15 seconds: generates synthetic data → fits the R models → makes sample
-appraisal PDFs → text-mines them → builds the Excel dashboard → asserts ~75
-checks, ending in `ALL CHECKS PASSED`.
+About 15 seconds: generates synthetic data → fits the R models → renders sample
+appraisal PDFs → text-mines them → builds the Excel dashboard → runs 64
+assertions, ending in `ALL CHECKS PASSED`.
 
-## The 5-minute interview walkthrough
+## How it is validated
 
-1. **Open `demo/nacody/NACody_Demo_Dashboard.xlsx` → Estimator sheet.**
-   "At Verus I fitted log-linear depreciation models in R per asset class —
-   age, usage meter, replacement cost, title status — and exported the
-   coefficients into Excel so appraisers could price an asset live."
-   Change Age 6 → 10 and watch the FMV band drop. The formulas are visible:
-   VLOOKUP into Model_Params, exactly the pattern of the real RegResults.xlsx.
+Synthetic data usually means a demo can only prove that it runs. This one
+proves more. `make_synthetic_data.py` generates 2,900 assets from **known
+parameters** and writes them to `ground_truth_params.json`; the test suite then
+asserts that the pipeline **recovers** them — the age coefficient, the usage
+effect, the rebuilt-title discount, the logit slope, and the annual
+depreciation rates derived from them. If the modeling were wrong, recovery
+would fail.
 
-2. **Show `Depr_Rates` sheet.** "The same models give the annual depreciation
-   rate per class — 1 − e^(age coefficient): ~12.6%/yr for highway tractors,
-   ~9%/yr for trailers. Those rates went into the depreciation section of
-   collateral appraisal reports for banks and insurers."
+The other two assertion groups cover extraction and assembly: every header and
+value field text-mined from each PDF must match ground truth exactly, and the
+dashboard's `Model_Params` sheet must be numerically identical to the R output
+with the estimator formula still live.
 
-3. **Show `Market_Comps` sheet, then a PDF in `demo/nacody/sample_reports/`.**
-   "The market-research section was fed by a text-mining pipeline — pdfplumber
-   plus regex over historical appraisal PDFs, pulling out dealer ads, auction
-   results, specs, and the appraised value ranges."
+## What it produces
 
-4. **Show `demo/deprrate/depr_rate_analyzer.R`.** "This is the modeling
-   pipeline — the cleaning rules and model specs are the ones from my actual
-   R history at Verus." (The real `.Rhistory` exists and proves it.)
+**DeprRateAnalyzR** — `demo/deprrate/depr_rate_analyzer.R` fits a log-linear
+model per asset class (age, usage meter, log replacement cost, title status),
+plus a binomial GLM for title status, and exports coefficients and rates as
+CSV. The cleaning rules and model specifications follow the ones I used at
+Verus. Annual depreciation rates come out of the age coefficient as 1 − e^β:
 
-5. **The closer — run the harness live.** "Because I can't show client data,
-   I validate the demo differently: the synthetic data is generated from known
-   parameters, and the test suite proves the pipeline *recovers* them — the
-   age coefficient, the usage effect, the rebuilt-title discount, the logit.
-   That's a stronger claim than 'it runs'."
+| Asset class | n | Annual depreciation | Usage term | Adj. R² |
+|---|---|---|---|---|
+| Highway Tractor | 1,173 | 12.3% | Km / 100,000 | 0.968 |
+| Crawler Excavator | 900 | 11.1% | Hours / 1,000 | 0.952 |
+| Dry Van Trailer | 800 | 9.0% | none (no meter) | 0.916 |
 
-## Honesty notes (truth-first)
+**NACody** — `extract_market_research.py` reads the sample appraisal PDFs with
+pdfplumber and regex anchors, recovering workfile ID, client, year/make/model,
+serial, FMV and OLV ranges, condition, spec bullets, and dealer/auction/ad
+comparables. `build_dashboard.py` assembles those plus the R coefficients into
+`NACody_Demo_Dashboard.xlsx`, whose Estimator sheet prices an asset live
+through visible VLOOKUP formulas against `Model_Params` — the pattern the
+production workbook used.
 
-- The surviving Verus code is **linear** (log-linear lm, incl. title-status
-  interaction models). No logit code survives on disk. The logit in this demo
-  (P(rebuilt title) ~ age + usage) is a formalization of the title-status work
-  stream — say so if asked, or soften the resume bullet to "linear/interaction
-  models".
-- The original NACody Excel workbook (with its OLE links) was not recoverable;
-  this demo reconstructs its function from the surviving components.
+## Scope and provenance
+
+- The demo is a reconstruction, not a copy. The original NACody workbook
+  depended on OLE links into the Verus environment and could not be rebuilt
+  from the surviving components; this version reproduces its function.
+- The depreciation models that survive from the production work are linear —
+  log-linear `lm`, including title-status interaction models. The logit here,
+  P(rebuilt title) ~ age + usage, formalizes that title-status work stream
+  rather than reproducing a specific model from it.
+- The Excel → R → Excel loop was originally driven by VBA that shelled out to
+  `Rscript` and imported the results back as a dated sheet. Here Python builds
+  the workbook from the R output instead, so the demo runs on any machine.
 
 ## Layout
 
@@ -60,8 +77,10 @@ demo/
   data/      make_synthetic_data.py     synthetic asset master + ground truth
   deprrate/  depr_rate_analyzer.R       R pipeline -> output/ (coeffs, rates, logit)
   nacody/    make_sample_reports.py     synthetic appraisal PDFs
-             extract_market_research.py pdfplumber+regex extraction
+             extract_market_research.py pdfplumber + regex extraction
              build_dashboard.py         -> NACody_Demo_Dashboard.xlsx
   validate/  run_validation.sh          end-to-end harness
-             check_results.py           ~75 assertions vs ground truth
+             check_results.py           64 assertions vs ground truth
 ```
+
+Requires Python 3 with pandas, openpyxl and pdfplumber, and Rscript with dplyr.

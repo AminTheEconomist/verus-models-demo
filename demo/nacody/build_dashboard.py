@@ -67,7 +67,7 @@ def main():
         "formulas, exactly the RegResults.xlsx pattern used at Verus.",
         "",
         "Market_Comps is text-mined from sample appraisal PDFs with",
-        "extract_market_research.py (the ByCody/PdfScrape pattern).",
+        "extract_market_research.py (the original notebooks' pattern).",
         "",
         "Try it: open Estimator, change Age or Usage, watch the FMV band move.",
     ], start=3):
